@@ -1,0 +1,2 @@
+proxy="http://bc-vip.intra.absa.co.za:8080"
+rejectUnauthorized=false 
