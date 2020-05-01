@@ -23,24 +23,24 @@ const getUrl = (_query, _limit = 1) => {
 
 const getGeolocation = (address, callback) => {
     const _url = getUrl(address);
-    request({ url: _url, json: true }, (error, response) => {
+    request({ url: _url, json: true }, (error, { body }) => {
         if (error) {
             return callback(error);
         }
 
-        if (response.body.error) {
-            return callback(response.body.error);
+        if (body.error) {
+            return callback(body.error);
         }
 
-        if (!response.body.features || response.body.features.length === 0) {
+        if (!body.features || body.features.length === 0) {
             return callback('Unable to find location, retry with another search term');
         }
 
-        const data = response.body.features[0];
-        const geolocation = { longitude: data.center[LONGITUDE_INDEX], latitude: data.center[LATITUDE_INDEX] };
+        const { center, place_name: placeName } = body.features[0];
+        const geolocation = { longitude, latitude } = { longitude: center[LONGITUDE_INDEX], latitude: center[LATITUDE_INDEX] };
 
-        console.log(`Using location '${data.place_name}'`);
-        console.log(`Geolocation: ${geolocation.longitude}, ${geolocation.latitude}`);
+        console.log(`Using location '${placeName}'`);
+        console.log(`Geolocation: ${longitude}, ${latitude}`);
 
         return callback(null, geolocation);
     });

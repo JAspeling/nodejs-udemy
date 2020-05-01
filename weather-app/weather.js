@@ -20,20 +20,18 @@ const getUrl = (_longitude, _latitude, _units = 'm') => {
 }
 
 const getTemperature = (longitude, latitude, callback) => {
-    request({ url: getUrl(longitude, latitude), json: true }, (error, response) => {
+    request({ url: getUrl(longitude, latitude), json: true }, (error, { body } = {}) => {
         if (error) {
             return callback('Cannot connect to the weather service');
         }
 
-        if (response.body.error) {
+        if (body.error) {
             return callback('Failed to retrieve temperature from location');
         }
 
-        const data = response.body;
+        const { temperature, feelslike, weather_descriptions: descriptions } = body.current;
 
-        const current = data.current;
-
-        return callback(null, { temperature: current.temperature, feelslike: current.feelslike, descriptions: current.weather_descriptions });
+        return callback(null, { temperature, feelslike, descriptions });
     })
 }
 
