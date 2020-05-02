@@ -1,0 +1,27 @@
+{
+    "git.autofetch": true,
+    "javascript.implicitProjectConfig.experimentalDecorators": true,
+    "workbench.editor.highlightModifiedTabs": true,
+    "files.trimFinalNewlines": true,
+    "prettier.bracketSpacing": false,
+    "editor.wordWrapColumn": 200,
+    "editor.detectIndentation": false,
+    "editor.formatOnPaste": true,
+    "html.format.wrapLineLength": 200,
+    "html.format.wrapAttributes": "force",
+    "prettier.useTabs": false,
+    "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets": false,
+    "diffEditor.ignoreTrimWhitespace": true,
+    "editor.wordSeparators": "`~!@#%^&*()-=+[{]}\\|;:'\",.<>/?",
+    "[json]": {
+        "editor.defaultFormatter": "remimarsal.prettier-now"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "[html]": {
+        "editor.defaultFormatter": "vscode.html-language-features"
+    },
+    "prettier.printWidth": 200,
+    "prettier.arrayExpand": true,
+}
