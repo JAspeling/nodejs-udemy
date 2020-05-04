@@ -14,7 +14,7 @@ const loaderElement = document.querySelector('#loader');
 // require('/src/utils/proxy');
 
 const getWeatherData = (address) => {
-    return new Promise((resolve, reject) => fetch(`http://localhost:3000/weather?address=${encodeURIComponent(address)}`)
+    return new Promise((resolve, reject) => fetch(`/weather?address=${encodeURIComponent(address)}`)
         .then((res) => res.json()
             .then((data) => {
                 if (data.error) {
