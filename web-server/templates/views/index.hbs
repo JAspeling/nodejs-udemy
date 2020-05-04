@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+    <title>Weather app</title>
+    <link rel="icon"
+        type="image/png"
+        href="/img/favicon.png">
+
+    <link rel="stylesheet"
+        href="/css/styles.css">
+</head>
+
+<body>
+    <div class="content">
+        {{>header}}
+
+        <form id="weatherForm">
+            <input id="address"
+                placeholder="Type an address">
+            <button id="search">Search</button>
+        </form>
+
+        <div id="loader" style="display: none">
+            <span>Loading...</span>
+        </div>
+
+        <div id="weather"
+            style="display: none">
+            <p><span><strong>Location: </strong></span><span id="location"></span></p>
+            <p><span><strong>Latitude - Longitude: </strong></span><span id="geolocation"></span></p>
+            <p><span><strong>Temperature: </strong></span><span id="temperature"></span></p>
+            <p><span><strong>Additional information: </strong></span><span id="descriptions"></span></p>
+        </div>
+        <div id="weather_error">
+            <p></p>
+        </div>
+    </div>
+
+    {{>footer}}
+
+    <script src="/js/app.js"></script>
+</body>
+
+</html>

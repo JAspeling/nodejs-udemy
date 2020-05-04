@@ -1,8 +1,63 @@
-h1 {
-    color: orange;
+html {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 
-img {
-    width: 250px;
-    
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  color: #333;
+  font-family: "Arial";
+  min-width: 650px;
+  padding: 0 1rem;
+  margin: 0;
 }
+
+.content {
+  flex-grow: 1;
+}
+
+header {
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+}
+header a {
+  color: #888;
+  text-decoration: none;
+}
+header a:not(:last-child) {
+  margin-right: 1rem;
+}
+
+h1 {
+  font-size: 64px;
+  margin-bottom: 1rem;
+}
+
+footer {
+  color: #888;
+  border-top: 1px solid #333;
+  margin-top: 1rem;
+  padding: 1rem 0;
+}
+
+.portrait {
+  width: 250px;
+}
+
+input {
+  padding: 8px;
+  border: 1px solid #ccc;
+}
+
+button {
+  color: white;
+  background: #888;
+  border: 1px solid #888;
+  padding: 8px;
+  cursor: pointer;
+}
+
+/*# sourceMappingURL=styles.css.map */
