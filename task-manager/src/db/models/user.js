@@ -49,6 +49,8 @@ const userSchema = new mongoose.Schema({
             required: true
         }
     }]
+}, {
+    timestamps: true
 })
 
 // Set up the link between users and tasks

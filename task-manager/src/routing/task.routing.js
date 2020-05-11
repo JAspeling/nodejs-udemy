@@ -1,6 +1,6 @@
 const express = require('express');
 const router = new express.Router();
-const Task = require('./../db/models').modelTask;
+const Task = require('./../db/models/task');
 
 const auth = require('../middleware/authentication');
 
@@ -19,12 +19,38 @@ router.post('/tasks', auth, async (req, res) => {
     }
 })
 
+// GET /tasks?completed=true
+// GET /tasks?limit=10
+// GET /tasks?skip=10
+// GET /tasks?sortBy=createdAt:desc
 router.get('/tasks', auth, async (req, res) => {
     try {
         // const tasks = await Task.find({ owner: req.user._id });
         // res.send(tasks);
 
-        await req.user.populate('tasks').execPopulate();
+        const match = {}
+        // Ascending = 1
+        // Descending: -1
+        const sort = {};
+
+        if (req.query.completed) {
+            match.completed = req.query.completed.toLowerCase() === 'true';
+        }
+
+        if (req.query.sortBy) {
+            const parts = req.query.sortBy.split(':');
+            sort[parts[0]] = parts[1].toLowerCase() === 'asc' ? 1 : -1;
+        }
+
+        await req.user.populate({
+            path: 'tasks',
+            match,
+            options: {
+                limit: parseInt(req.query.limit),
+                skip: parseInt(req.query.skip),
+                sort
+            }
+        }).execPopulate();
         res.send(req.user.tasks);
     } catch (error) {
         console.log(error);

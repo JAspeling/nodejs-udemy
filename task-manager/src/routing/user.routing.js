@@ -1,6 +1,6 @@
 const express = require('express');
 const router = new express.Router();
-const User = require('./../db/models').modelUser;
+const User = require('./../db/models/user');
 const auth = require('../middleware/authentication');
 
 router.post('/users', async (req, res) => {
@@ -52,7 +52,7 @@ router.get('/users/me', auth, async (req, res) => {
     res.send(req.user);
 });
 
-router.patch('/users/me', auth,  async (req, res) => {
+router.patch('/users/me', auth, async (req, res) => {
     const updates = Object.keys(req.body);
     const allowedUpdates = ['name', 'email', 'password', 'age'];
     const isValidOperation = updates.every(key => allowedUpdates.includes(key));
@@ -78,7 +78,7 @@ router.patch('/users/me', auth,  async (req, res) => {
     }
 });
 
-router.delete('/users/me', auth,  async (req, res) => {
+router.delete('/users/me', auth, async (req, res) => {
     try {
         await req.user.remove();
 
