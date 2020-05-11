@@ -1,62 +1,95 @@
 const express = require('express');
-let app = express();
+const router = new express.Router();
 const Task = require('./../db/models').modelTask;
 
-const route = (_app) => {
-    app = _app;
+const auth = require('../middleware/authentication');
 
-    app.post('/tasks', async (req, res) => {
-        const task = new Task(req.body);
-
-        try {
-            await task.save();
-            res.status(201).send(task);
-
-        } catch (error) {
-            res.status(400).send(error)
-        }
-    })
-
-    app.get('/tasks', async (req, res) => {
-        try {
-            const tasks = await Task.find({});
-            res.status(200).send(tasks);
-        } catch (error) {
-            res.status(500).send(error)
-        }
+router.post('/tasks', auth, async (req, res) => {
+    const task = new Task({
+        ...req.body,
+        owner: req.user._id
     });
 
-    app.get('/tasks/:id', async (req, res) => {
-        try {
-            const id = req.params['id'];
-            const task = await Task.findById(id);
-            if (!task) {
-                return res.status(404).send(`Task with id '${id}' not found`)
-            }
-            res.status(200).send(task);
-        } catch (error) {
-            res.status(500).send(error)
+    try {
+        await task.save();
+        res.status(201).send(task);
+
+    } catch (error) {
+        res.status(400).send(error)
+    }
+})
+
+router.get('/tasks', auth, async (req, res) => {
+    try {
+        // const tasks = await Task.find({ owner: req.user._id });
+        // res.send(tasks);
+
+        await req.user.populate('tasks').execPopulate();
+        res.send(req.user.tasks);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error)
+    }
+});
+
+router.get('/tasks/:id', auth, async (req, res) => {
+    try {
+        const _id = req.params.id;
+        const task = await Task.findOne({ _id, owner: req.user._id });
+
+        if (!task) {
+            return res.status(404).send(`Task with id '${_id}' not found.`)
         }
-    });
 
-    app.delete('/tasks/:id', async (req, res) => {
 
-        try {
-            const id = req.params['id'];
-            const task = await Task.findByIdAndDelete(id)
+        res.status(200).send(task);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error)
+    }
+});
 
-            console.log(`Task with id ${id} deleted`, task);
+router.patch('/tasks/:id', auth, async (req, res) => {
+    const allowedUpdates = ['description', 'completed'];
+    const updates = Object.keys(req.body);
+    const isValidOperation = updates.every(key => allowedUpdates.includes(key));
 
-            const count = await Task.countDocuments({ completed: false });
-            res.send({
-                id: task.id,
-                incomplete: `${count} incomplete tasks remaining.`
-            })
-        } catch (error) {
-            res.status(500).send(error)
+    if (!isValidOperation) {
+        return res.status(400).send({ error: 'Invalid update' });
+    }
+
+    try {
+        const task = await Task.findOne({ _id: req.params.id, owner: req.user._id });
+
+        if (!task) {
+            return res.status(404).send(`Task with id '${id}' not found`);
         }
-    })
-}
+
+        updates.forEach(key => task[key] = req.body[key]);
+
+        task.save();
+
+        return res.send(task);
+    } catch (error) {
+        return res.status(500).send(error);
+    }
+});
+
+router.delete('/tasks/:id', auth, async (req, res) => {
+
+    try {
+        const task = await Task.findOneAndDelete({ _id: req.params.id, owner: req.user._id });
+
+        if (!task) {
+            return res.status(404).send(`Task with id '${req.params.id}' not found`);
+        }
+
+        return res.send(task);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error)
+    }
+});
 
 
-module.exports = { route };
+module.exports = router;
